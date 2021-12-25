@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title>Encrypt & Decrypt</title>
+  </head>
+  <body>
+
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <a class="navbar-brand" href="#">Encrypt/Decrypt</a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/"  style="font-weight: bold;">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+    <!--   <li class="nav-item">
+        <a class="nav-link" href="#">Link</a>
+      </li>
+
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#">Disabled</a>
+      </li> -->
+
+    </ul>
+
+   <!--  <form class="form-inline my-2 my-lg-0">
+
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+
+    </form> -->
+  </div>
+</nav>
+
+<!--Main file upload section-->
+    <div class="container py-5">
+
+    <!-- For demo purpose -->
+    <header class="text-black text-center">
+        <h1 class="display-4" style="margin-top:20px;font-weight: bold">Encrypt & Decrypt Text Online</h1>
+        {% comment %} <p class="lead mb-0">Build a simple image upload button using Bootstrap 4.</p>
+        <p class="mb-5 font-weight-light">Snippet by
+            <a href="https://bootstrapious.com" class="text-white">
+                <u>Bootstrapious</u>
+            </a>
+        </p> {% endcomment %}
+        {% comment %} <img src="https://res.cloudinary.com/mhmd/image/upload/v1564991372/image_pxlho1.svg" alt="" width="150" class="mb-4"> {% endcomment %}
+    </header>
+
+
+
+
+    <div class="container" style="margin-top:20px;">
+    
+    {% comment %} form-1///////////////// {% endcomment %}
+    <div style="border:1px solid black;padding:20px 50px;">
+    <form action="{% url 'encrypt_url' %}" method="post" style="text-align:center;">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Encrypt Message</label>
+        <textarea name="text1" placeholder="Enter Your Message" class="form-control rounded-0" id="exampleFormControlTextarea1" rows="4" required>{{text1}}</textarea>
+    </div>
+
+    {% comment %} <input type="text" name="psd_e" class="form" style="width:20%;" placeholder="Password" required> {% endcomment %}
+    <button class="btn btn-success" >Encrypt</button>
+
+    {% if fernet_key %}
+    <div class="form-group">
+        <label style="margin-top:10px;" for="exampleFormControlTextarea1">Output Text</label>
+
+        <br>
+        <label style="float:left;color:red;" for="exampleFormControlTextarea1">
+        Alert : Please save the password and message, When you forgot to save password we can't decrypt that message.
+        </label>
+        <br><hr>
+        <section>
+        <label style="float:left;" for="">Your Password</label>
+
+        <label style="float:right;margin-bottom:10px;"class="btn btn-info" id="my_psd" onclick="myFunction();">Copy</label>
+        <input  type="text" class="form-control" placeholder="Password" id="psd_input" value="{{fernet_key}}">
+
+        <label style="float:left;margin-top:10px;" for="exampleFormControlTextarea1">Encrypted Message</label>
+
+        <label style="float:right;margin:10px 0px 10px 0px;"class="btn btn-info" id="my_msg" onclick="myFunction2();">Copy</label>
+        <textarea style="margin-top:10px;" placeholder="Encrypted Data" class="form-control rounded-0" id="enrypt_msg" rows="3">{{encrypt_msg}}</textarea>
+        </section>
+    </div>
+    {% endif %}
+
+    </form>
+    </div>
+
+    {% comment %} form-2///////////////// {% endcomment %}
+    <div style="border:1px solid black;padding:20px 50px;margin-top:10px;">
+    <form action="{% url 'decrypt_url' %}" method="post" style="text-align:center;">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">Decrypt Message</label><br>
+        <label for="exampleFormControlTextarea1">{{error_msg}}</label>
+        <input  placeholder="Enter Your Password" type="text" class="form-control" value="{{psd_key}}" placeholder="Enter Your Password" id="" name="psd_d" required>
+        <textarea style="margin-top:10px;" name="text2" class="form-control rounded-0" placeholder="Enter Your Decrypt Message" id="exampleFormControlTextarea1" rows="3" required>{{text2}}</textarea>
+    </div>
+   
+    {% comment %} <input type="text" name="psd_d" class="form" style="width:20%;" placeholder="Password" required> {% endcomment %}
+    <button class="btn btn-success" >Decrypt</button>
+
+    {% if decrypt_msg %}
+    <div class="form-group">
+        <label style="margin-top:10px;" for="exampleFormControlTextarea1">Output Text</label>
+        <br><label style="float:right;margin-bottom:10px;"class="btn btn-info" id="my_decrypt_psd" onclick="myFunction3();">Copy</label>
+        <textarea class="form-control rounded-0" id="decrypt_msg" rows="4">{{decrypt_msg}}</textarea>
+    </div>
+    {% endif %}
+
+    </form>
+    </div>
+   
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+  
+  
+{% comment %} Password & message Copying script ///////////////////////////////// {% endcomment %}
+
+{% comment %} for encrypt_msg area {% endcomment %}
+<script>
+{% comment %} password copying function {% endcomment %}
+  function myFunction() {
+  /* Get the text field */
+  var copyText = document.getElementById("psd_input");
+
+  {% comment %} copyText.innerHTML="Password Copied"; {% endcomment %}
+  document.getElementById("my_psd").innerHTML="Password Copied";
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+   /* Copy the text inside the text field */
+  navigator.clipboard.writeText(copyText.value);
+
+  /* Alert the copied text */
+  {% comment %} alert("Copied the text: " + copyText.value); {% endcomment %}
+  {% comment %} alert("Copied the text"); {% endcomment %}
+}
+{% comment %} password copying function end //////// {% endcomment %}
+
+
+{% comment %} encrypt_msg copying function {% endcomment %}
+
+function myFunction2() {
+  /* Get the text field */
+  var copyText = document.getElementById("enrypt_msg"); /*text area content*/
+
+  {% comment %} copyText.innerHTML="Password Copied"; {% endcomment %}
+  document.getElementById("my_msg").innerHTML="Password Copied";
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+   /* Copy the text inside the text field */
+  navigator.clipboard.writeText(copyText.value);
+
+  /* Alert the copied text */
+  {% comment %} alert("Copied the text: " + copyText.value); {% endcomment %}
+  {% comment %} alert("Copied the text"); {% endcomment %}
+}
+{% comment %} encrypt_msg copying function end ///////{% endcomment %}
+
+
+</script>
+{% comment %} for encrypt_msg area {% endcomment %}
+
+{% comment %} //////////////////////////////////// {% endcomment %}
+
+<script>
+
+    {% comment %} decrpt_msg copying function {% endcomment %}
+
+function myFunction3() {
+  /* Get the text field */
+  var copyText = document.getElementById("decrypt_msg"); /*text area content*/
+
+  {% comment %} copyText.innerHTML="Password Copied"; {% endcomment %}
+  document.getElementById("my_decrypt_psd").innerHTML="Password Copied";
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+   /* Copy the text inside the text field */
+  navigator.clipboard.writeText(copyText.value);
+
+  /* Alert the copied text */
+  {% comment %} alert("Copied the text: " + copyText.value); {% endcomment %}
+  {% comment %} alert("Copied the text"); {% endcomment %}
+}
+{% comment %} decrpt_msg copying function end ///////{% endcomment %}
+
+</script>
+  
+  </body>
+</html>
